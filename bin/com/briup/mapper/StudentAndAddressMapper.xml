@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.mapper.StudentAndAddressMapper">
+
+	<!-- 配置结果集 嵌套 -->
+	<resultMap type="Student" id="StudentResult1">
+		<result column="stud_id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="email" property="email"/>
+		<result column="dob" property="dob"/>
+		<result column="phone" property="phone"/>
+		<result column="addr_id" property="address.id"/>
+		<result column="street" property="address.street"/>
+		<result column="city" property="address.city"/>
+		<result column="state" property="address.state"/>
+		<result column="zip" property="address.zip"/>
+		<result column="country" property="address.country"/>
+	</resultMap>
+	
+	<!-- Address结果集 -->
+	<resultMap type="Address" id="AddressResult">
+		<result column="addr_id" property="id"/>
+		<result column="street" property="street"/>
+		<result column="city" property="city"/>
+		<result column="state" property="state"/>
+		<result column="zip" property="zip"/>
+		<result column="country" property="country"/>
+	</resultMap>
+	
+	<!-- 配置结果集 使用association -->
+	<resultMap type="Student" id="StudentResult">
+		<result column="stud_id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="email" property="email"/>
+		<result column="dob" property="dob"/>
+		<result column="phone" property="phone"/>
+		<!-- 一对一 -->
+		<association property="address" resultMap="AddressResult"></association>
+	</resultMap>
+	
+	<!-- public Student findStudentAndAddressById(int id); -->
+	<select id="findStudentAndAddressById" parameterType="int" resultMap="StudentResult">
+		select * 
+		from students s,addresses a
+		where stud_id = #{id}
+			  and
+			  s.addr_id=a.addr_id
+	</select>
+</mapper>

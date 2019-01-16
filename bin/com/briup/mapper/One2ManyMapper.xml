@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.mapper.One2ManyMapper">
+	
+	<!-- Address结果集 -->
+	<resultMap type="Address" id="AddressResult">
+		<id column="addr_id" property="id"/>
+		<result column="street" property="street"/>
+		<result column="city" property="city"/>
+		<result column="state" property="state"/>
+		<result column="zip" property="zip"/>
+		<result column="country" property="country"/>
+	</resultMap>
+	
+	<resultMap type="Course" id="CouResult">
+		<id column="" property=""/>
+		<result column="course_id" property="id"/>
+		<result column="cname" property="name"/>
+		<result column="description" property="description"/>
+		<result column="start_date" property="startDate"/>
+		<result column="end_date" property="endDate"/>
+	</resultMap>
+	
+	<!-- Tutor结果集 -->
+	<resultMap type="Tutor" id="TutorResult">
+		<id column="tutor_id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="email" property="email"/>
+		<result column="phone" property="phone"/>
+		<association property="address" resultMap="AddressResult"></association>
+		<collection property="courses" resultMap="CouResult"></collection>
+	</resultMap>
+	<!-- public Tutor findTutorById(int id); -->
+	<select id="findTutorById" parameterType="_int" resultMap="TutorResult">
+		select  t.tutor_id,t.name name,email,phone,
+				a.addr_id,street,city,state,zip,country,
+				c.course_id,c.name cname,description,start_date,end_date
+		from tutors t,addresses a,courses c
+		where t.addr_id = a.addr_id
+			  and
+			  c.tutor_id = t.tutor_id
+			  and
+			  t.tutor_id=1
+	</select>
+		
+	<!-- Course结果集 -->
+	<resultMap type="Course" id="CourseResult">
+		<id column="" property=""/>
+		<result column="course_id" property="id"/>
+		<result column="cname" property="name"/>
+		<result column="description" property="description"/>
+		<result column="start_date" property="startDate"/>
+		<result column="end_date" property="endDate"/>
+		<!-- 多对一 -->
+		<association property="tutor" resultMap="TutorResult" />
+	</resultMap>
+	
+	<!-- public Course findCourseById(int id); -->
+	<select id="findCourseById" parameterType="_int" resultMap="CourseResult">
+		select c.course_id,c.name cname,description,start_date,end_date,
+			   t.tutor_id,t.name name,email,phone,
+			   a.addr_id,street,city,state,zip,country 
+		from courses c,tutors t,addresses a
+		where t.addr_id=a.addr_id
+			  and
+			  c.tutor_id = t.tutor_id
+			  and
+			  course_id=#{id}
+	</select>
+	
+</mapper>

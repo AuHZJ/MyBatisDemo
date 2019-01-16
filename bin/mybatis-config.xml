@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC 
+		"-//mybatis.org//DTD Config 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 使用全局变量 -->
+	<properties resource="jdbc.properties">
+		<!-- 
+		<property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:XE"/>
+		<property name="user" value="briup"/>
+		<property name="password" value="briup"/>
+		 -->
+	</properties>
+	
+	<settings>
+		<setting name="cacheEnabled" value="true"/>
+	</settings>
+	
+	<!-- 配置别名 -->
+	<typeAliases>
+		<!-- 
+		<typeAlias type="com.briup.bean.Student" alias="Student"/>
+		 -->
+		<typeAlias type="com.briup.annotation.Person"/>
+		 <package name="com.briup.bean"/>
+		<!--  <package name="com.briup.many2many"/> -->
+		 <package name="com.briup.special"/>
+	</typeAliases>
+	<!-- 配置类型处理器 -->
+	<typeHandlers>
+		<typeHandler handler="com.briup.handler.PhoneTypeHandler"/>
+	</typeHandlers>
+	
+	<!-- 定义数据库连接环境 -->
+	<environments default="development">
+		<!-- 数据库信息 -->
+		<environment id="development">
+			<!-- 事务管理方式：JDBC（开发人员自己管理） -->
+			<transactionManager type="JDBC"></transactionManager>
+			<!-- 数据源类型：连接池 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}" /> 
+				<property name="url" value="${url}" /> 
+				<property name="username" value="${user}" />
+				<property name="password" value="${password}" />
+			</dataSource>
+		</environment>
+		
+	</environments>
+	
+	<mappers>
+		<!-- 
+		<mapper resource="com/briup/mapper/StudentMapper.xml"></mapper>
+		<mapper resource="com/briup/mapper/StudentAndAddressMapper.xml"/>
+		<mapper resource="com/briup/mapper/One2ManyMapper.xml"/>
+		 -->
+		 <package name="com/briup/mapper"/>
+	</mappers>
+	
+</configuration>

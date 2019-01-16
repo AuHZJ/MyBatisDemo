@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.mapper.DynamicSqlMapper">
+	
+	<resultMap type="Course" id="CourseResult"> 
+	  <id column="course_id" property="id" /> 
+	  <result column="name" property="name" /> 
+	  <result column="description" property="description" /> 
+	  <result column="start_date" property="startDate" /> 
+	  <result column="end_date" property="endDate" /> 
+	</resultMap> 
+	<!-- 
+	<select id="searchCourses" parameterType="map" resultMap="CourseResult">
+		select * from courses 
+		where tutor_id= #{id} 
+		<if test="courseName != null"> 
+			and name like #{courseName} 
+		</if> 
+		<if test="startDate != null"> 
+			and start_date >= #{startDate} 
+		</if> 
+		<if test="endDate != null"> 
+			and end_date <![CDATA[ <= ]]> #{endDate} 
+		</if> 
+	</select> 
+	 -->
+ 	<!-- 
+	<select id="searchCourses" parameterType="map" resultMap="CourseResult"> 
+		select * from courses 
+		<choose> 
+			<when test="searchBy == 'Tutor'"> 
+				WHERE TUTOR_ID= #{tutorId} 
+			</when> 
+			<when test="searchBy == 'CourseName'"> 
+				WHERE name like #{courseName} 
+			</when> 
+			<otherwise> 
+				WHERE start_date >= sysdate-1000
+			</otherwise> 
+		</choose> 
+	</select>
+	 -->
+	<!-- 
+	<select id="searchCourses" parameterType="map" resultMap="CourseResult"> 
+		select * from courses 
+		<where>  
+			<if test="tutorId != null "> 
+				tutor_id= #{tutorId} 
+			</if> 
+			<if test="courseName != null"> 
+				AND name like #{courseName} 
+			</if> 
+			<if test="startDate != null"> 
+				AND start_date >= #{startDate} 
+			</if> 
+			<if test="endDate != null"> 
+				AND end_date <![CDATA[ <= ]]> #{endDate} 
+			</if> 
+		</where> 
+	</select> 
+	  -->
+	 
+	<select id="searchCourses" parameterType="map" resultMap="CourseResult"> 
+		SELECT * FROM COURSES 
+		<trim prefix="WHERE" suffixOverrides="or | and" > 
+			<if test=" tutorId != null ">
+				TUTOR_ID= #{tutorId} and
+			</if> 
+			<if test="courseName != null"> 
+				name like #{courseName} and
+			</if> 
+		</trim> 
+	</select> 
+	
+	<!-- 
+	<select id="searchCoursesByTutors" parameterType="map" resultMap="CourseResult"> 
+		select * from courses 
+		where id in(1,3,2)
+		<if test="tutorIds != null"> 
+			<where> 
+				<foreach item="tutorId" collection="tutorIds"> 
+					OR tutor_id=#{tutorId} 
+				</foreach> 
+			</where>  
+		</if>  
+	</select>  -->
+
+	<select id="searchCoursesByTutors" parameterType="map" resultMap="CourseResult"> 
+		SELECT * FROM COURSES 
+		<if test="tutorIds != null"> 
+			<where> 
+				tutor_id IN 
+				<foreach item="tempValue" collection="tutorIds" open="(" separator="," close=")"> 
+					#{tempValue} 
+				</foreach> 
+			</where> 
+		</if> 
+	</select> 
+	
+	
+	<update id="updateCourse" parameterType="Course"> 
+		update courses  
+		<set> 
+			<if test="name != null">name=#{name},</if> 
+			<if test="description != null">description=#{description},</if> 
+			<if test="startDate != null">start_date=#{startDate},</if> 
+			<if test="endDate != null">end_date=#{endDate},</if> 
+		</set> 
+		where 
+		course_id=#{id} 
+	</update> 
+	
+	
+	
+</mapper>
